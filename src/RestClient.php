@@ -520,7 +520,7 @@ class RestClient
                 $response['body']   = $this->xml2array($xml);
                 break;
         }
-        return new RestResponse($response);
+        return $this->getResponseObj()->setArray($response);
     }
 
     /**
@@ -619,6 +619,14 @@ class RestClient
             }
         }
         return $headers;
+    }
+
+    /**
+     * @return RestResponse
+     */
+    protected function getResponseObj()
+    {
+        return new RestResponse();
     }
 
     /**

@@ -50,7 +50,7 @@ class RestResponse implements \JsonSerializable
         'method'            => '',
         'data'              => null,
         'status'            => 200,
-        'body'              => '',
+        'body'              => null,
         'headers'           => [],
         'curlError'         => '',
         'curlErrorNo'       => null,
@@ -59,7 +59,7 @@ class RestResponse implements \JsonSerializable
     /**
      * @param array $data
      */
-    public function __construct(array $data=null)
+    public function __construct(array $data=[])
     {
         $this->setArray($data);
     }
