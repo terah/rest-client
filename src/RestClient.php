@@ -302,7 +302,7 @@ class RestClient
 
     /**
      * @param $entity
-     * @return string|null
+     * @return string|null|\stdClass
      * @throws \Exception
      */
     public function sendRequest($entity=null)
@@ -316,7 +316,7 @@ class RestClient
 
     /**
      * @param $entity
-     * @return mixed|null
+     * @return string
      * @throws \Exception
      */
     public function getRawRequest($entity=null)
@@ -326,7 +326,26 @@ class RestClient
             ->setCurlOpt(CURLINFO_HEADER_OUT, true)
             ->buildRequest($entity)
             ->curlExec();
-        return $this->getCurlInfo(CURLINFO_HEADER_OUT);
+        $rawRequest = $this->getCurlInfo(CURLINFO_HEADER_OUT);
+        $this->reset();
+        return $rawRequest;
+    }
+
+    /**
+     * @param $entity
+     * @return mixed|null
+     * @throws \Exception
+     */
+    public function getResponse($entity=null)
+    {
+        $this
+            ->ignoreErrors(true)
+            ->setCurlOpt(CURLINFO_HEADER_OUT, true)
+            ->buildRequest($entity)
+            ->curlExec();
+        $response = $this->response;
+        $this->reset();
+        return $response;
     }
 
     /**
