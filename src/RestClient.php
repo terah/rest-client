@@ -534,7 +534,8 @@ class RestClient
             return [[], ''];
         }
         $responseText               = trim(preg_replace('/^HTTP\/[0-9. ]+Continue/', '', $responseText));
-        list($headerData, $body)    = explode("\r\n\r\n", $responseText, 2);
+        $parts                      = explode("\r\n\r\n", $responseText, 2);
+        list($headerData, $body)    = empty($parts[1]) ? [$parts[0], ''] : $parts;
         unset($responseText);
         $headerData                 = explode("\r\n", $headerData);
         $headers                    = [];
