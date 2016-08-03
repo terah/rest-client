@@ -3,8 +3,6 @@
 namespace Terah\RestClient;
 
 use function Terah\Assert\Assert;
-use function Terah\Assert\Validate;
-
 
 class RestClient
 {
@@ -24,9 +22,6 @@ class RestClient
 
     /** @var string $authHeader */
     protected $authHeader   = 'X-Auth-Token';
-
-    /** @var string $authHeader */
-    protected $metaHeader   = 'X-Auth-Meta';
 
     /** @var string $method */
     protected $method       = 'GET';
@@ -499,14 +494,14 @@ class RestClient
     protected function parseResponse($response, $httpStatusCode, $curlError, $curlErrorNo)
     {
         list($headers, $body)       = $this->parseHeadersAndBody($response);
-        $response                   = isset($headers[$this->metaHeader]) ? json_decode($headers[$this->metaHeader], true) : [];
-        $response                   = is_array($response) ? $response : [];
-        unset($headers[$this->metaHeader]);
-        $response['headers']        = $headers;
-        $response['body']           = $body;
-        $response['status']         = $httpStatusCode;
-        $response['curlError']      = $curlError;
-        $response['curlErrorNo']    = $curlErrorNo;
+        $response                   = [
+            'method'                    => $this->method,
+            'status'                    => $httpStatusCode,
+            'body'                      => $body,
+            'headers'                   => $headers,
+            'curlError'                 => $curlError,
+            'curlErrorNo'               => $curlErrorNo,
+        ];
         $contentType                = $this->parseContentType($headers, $this->formats[$this->accept][0][0]);
         switch ( $contentType )
         {

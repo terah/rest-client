@@ -3,26 +3,12 @@
 namespace Terah\RestClient;
 
 use function Terah\Assert\Assert;
-use function Terah\Assert\Validate;
 
 /**
  * Class RestResponse
  *
  * @package Terah\RestClient
- * @property int count
- * @property int total
- * @property int limit
- * @property int offset
- * @property int page
- * @property int pages
- * @property array order
- * @property string self
- * @property array messages
- * @property string token
- * @property array filters
- * @property array fields
  * @property string method
- * @property mixed data
  * @property int status
  * @property string body
  * @property array headers
@@ -34,26 +20,13 @@ class RestResponse implements \JsonSerializable
     /**
      * @var array
      */
-    protected $_meta_data = [
-        'count'             => 0,
-        'total'             => 0,
-        'limit'             => 0,
-        'offset'            => 0,
-        'page'              => 1,
-        'pages'             => 1,
-        'order'             => [],
-        'self'              => '',
-        'messages'          => [],
-        'token'             => '',
-        'filters'           => [],
-        'fields'            => [],
-        'method'            => '',
-        'data'              => null,
-        'status'            => 200,
-        'body'              => null,
-        'headers'           => [],
-        'curlError'         => '',
-        'curlErrorNo'       => null,
+    protected $_meta_data   = [
+        'method'                => '',
+        'status'                => 200,
+        'body'                  => null,
+        'headers'               => [],
+        'curlError'             => '',
+        'curlErrorNo'           => null,
     ];
 
     /**
