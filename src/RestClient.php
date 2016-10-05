@@ -328,7 +328,7 @@ class RestClient
 
     /**
      * @param $entity
-     * @return mixed|null
+     * @return RestResponse
      * @throws \Exception
      */
     public function getResponse($entity=null)
