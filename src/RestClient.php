@@ -580,7 +580,6 @@ class RestClient
         return '';
     }
 
-
     /**
      * @param $entity
      * @return string
