@@ -99,6 +99,14 @@ class RestClient
     }
 
     /**
+     * @return resource
+     */
+    public function getHandle()
+    {
+        return $this->curlObj;
+    }
+
+    /**
      * @param $name
      * @param $value
      *
@@ -160,6 +168,7 @@ class RestClient
         $this->ignoreErrors = false;
         $this->format('json');
         $this->header('X-Api-Version', '1.0');
+
         return $this;
     }
 
@@ -323,6 +332,7 @@ class RestClient
             ->curlExec();
         $rawRequest = $this->getCurlInfo(CURLINFO_HEADER_OUT);
         $this->reset();
+
         return $rawRequest;
     }
 
@@ -340,6 +350,21 @@ class RestClient
             ->curlExec();
         $response = $this->response;
         $this->reset();
+
+        return $response;
+    }
+
+    /**
+     * @param bool $multi
+     * @return RestResponse
+     */
+    public function getPreBuiltResponse($multi=false)
+    {
+        $this
+            ->curlExec($multi);
+        $response = $this->response;
+        $this->reset();
+
         return $response;
     }
 
@@ -347,7 +372,7 @@ class RestClient
      * @param string $entity
      * @return $this
      */
-    protected function buildRequest($entity=null)
+    public function buildRequest($entity=null)
     {
         $this
             ->setCurlOpt(CURLOPT_URL, $this->getUrl($entity))
@@ -362,6 +387,7 @@ class RestClient
             ->setCurlBasicAuth()
             ->setCurlCookies()
             ->setCurlData();
+
         return $this;
     }
 
@@ -466,12 +492,12 @@ class RestClient
     }
 
     /**
-     * @return mixed
-     * @throws \Exception
+     * @param bool $isMulti
+     * @return string
      */
-    protected function curlExec()
+    public function curlExec($isMulti=false)
     {
-        $response           = curl_exec($this->curlObj);
+        $response           = $isMulti ? curl_multi_getcontent($this->curlObj) : curl_exec($this->curlObj);
         $httpCode           = curl_getinfo($this->curlObj, CURLINFO_HTTP_CODE);
         $curlError          = curl_error($this->curlObj);
         $curlErrNo          = curl_errno($this->curlObj);
@@ -491,7 +517,7 @@ class RestClient
      * @param int $curlErrorNo
      * @return RestResponse
      */
-    protected function parseResponse($response, $httpStatusCode, $curlError, $curlErrorNo)
+    public function parseResponse($response, $httpStatusCode, $curlError, $curlErrorNo)
     {
         list($headers, $body)       = $this->parseHeadersAndBody($response);
         $response                   = [
@@ -579,6 +605,7 @@ class RestClient
         }
         return '';
     }
+
 
     /**
      * @param $entity
