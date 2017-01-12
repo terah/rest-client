@@ -305,17 +305,20 @@ class RestClient
     }
 
     /**
-     * @param $entity
-     * @return string|null|\stdClass
+     * @param string $entity
+     * @param bool $returnResponse
+     * @return string|null|\stdClass|RestResponse
      * @throws \Exception
      */
-    public function sendRequest($entity=null)
+    public function sendRequest($entity=null, bool $returnResponse=false)
     {
         $result = $this
             ->buildRequest($entity)
             ->curlExec();
+        $response = $this->response;
         $this->reset();
-        return $result;
+
+        return $returnResponse ? $response : $result;
     }
 
     /**
