@@ -310,7 +310,7 @@ class RestClient
      * @return string|null|\stdClass|RestResponse
      * @throws \Exception
      */
-    public function sendRequest($entity=null, bool $returnResponse=false)
+    public function sendRequest($entity=null, $returnResponse=false)
     {
         $result = $this
             ->buildRequest($entity)
