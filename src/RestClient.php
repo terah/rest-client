@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Terah\RestClient;
 
@@ -310,7 +310,7 @@ class RestClient
      * @return string|null|\stdClass|RestResponse
      * @throws \Exception
      */
-    public function sendRequest($entity=null, $returnResponse=false)
+    public function sendRequest($entity=null, bool $returnResponse=false)
     {
         $result = $this
             ->buildRequest($entity)
