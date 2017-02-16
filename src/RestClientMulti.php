@@ -2,12 +2,12 @@
 
 namespace Terah\RestClient;
 
-class RestClientMulti
+class RestClientMulti implements RestClientMultiInterface
 {
     /** @var resource */
     protected $curlMultiObj = null;
 
-    /** @var RestClient[] */
+    /** @var RestClientInterface[] */
     protected $restClients  = [];
 
     /** @var resource[] */
@@ -19,10 +19,10 @@ class RestClientMulti
     }
 
     /**
-     * @param RestClient $restClient
-     * @return $this
+     * @param RestClientInterface $restClient
+     * @return RestClientMultiInterface
      */
-    public function addClient(RestClient $restClient)
+    public function addClient(RestClientInterface $restClient) : RestClientMultiInterface
     {
         $this->restClients[]    = $restClient;
         curl_multi_add_handle($this->curlMultiObj, $restClient->getHandle());
@@ -31,7 +31,7 @@ class RestClientMulti
     }
 
     /**
-     * @return RestResponse[]
+     * @return RestResponseInterface[]
      */
     public function execAll()
     {

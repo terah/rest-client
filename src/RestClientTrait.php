@@ -10,21 +10,22 @@ trait RestClientTrait
     /**
      * Sets a cache.
      *
-     * @param RestClient $restClient
+     * @param RestClientInterface $restClient
      * @return $this
      */
-    public function setRestClient(RestClient $restClient)
+    public function setRestClient(RestClientInterface $restClient)
     {
         $this->restClient = $restClient;
+
         return $this;
     }
 
     /**
      * Gets a client.
      *
-     * @return RestClient
+     * @return RestClientInterface
      */
-    public function getRestClient()
+    public function getRestClient() : RestClientInterface
     {
         return $this->restClient;
     }

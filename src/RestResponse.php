@@ -15,7 +15,7 @@ use function Terah\Assert\Assert;
  * @property string curlError
  * @property int curlErrorNo
  */
-class RestResponse implements \JsonSerializable
+class RestResponse implements \JsonSerializable, RestResponseInterface
 {
     /**
      * @var array
@@ -38,35 +38,43 @@ class RestResponse implements \JsonSerializable
     }
 
     /**
-     * @param array $data
-     * @return RestResponse
+     * @return mixed
      */
-    public function setArray(array $data)
+    public function getBody()
+    {
+        return $this->_meta_data['body'];
+    }
+
+    /**
+     * @param array $data
+     * @return RestResponseInterface
+     */
+    public function setArray(array $data) : RestResponseInterface
     {
         foreach ( $data as $name => $value )
         {
             $this->set($name, $value);
         }
+
         return $this;
     }
 
     /**
-     * @param $name
-     * @param $args
-     * @return RestResponse
+     * @param string $name
+     * @param array $args
+     * @return RestResponseInterface
      */
-    public function __call($name, $args)
+    public function __call(string $name, array $args) : RestResponseInterface
     {
         return $this->set($name, $args[0]);
     }
 
     /**
      * @param string $name
-     * @param mixed $value
-     * @return RestResponse
-     * @throws \Terah\Assert\AssertionFailedException
+     * @param $value
+     * @return RestResponseInterface
      */
-    public function set($name, $value)
+    public function set(string $name, $value) : RestResponseInterface
     {
         // We don't want this throwing exceptions in invalid keys
         // as this maybe used inside the RestException class and
@@ -81,15 +89,15 @@ class RestResponse implements \JsonSerializable
             return $this;
         }
         $this->_meta_data[$name] = $value;
+
         return $this;
     }
 
     /**
      * @param string $name
      * @return mixed
-     * @throws \Terah\Assert\AssertionFailedException
      */
-    public function __get($name)
+    public function __get(string $name)
     {
         return $this->get($name);
     }
@@ -97,18 +105,18 @@ class RestResponse implements \JsonSerializable
     /**
      * @param string $name
      * @return mixed
-     * @throws \Terah\Assert\AssertionFailedException
      */
-    public function get($name)
+    public function get(string $name)
     {
         Assert($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
+
         return $this->_meta_data[$name];
     }
 
     /**
      * @return array
      */
-    public function toArray()
+    public function toArray() : array
     {
         return $this->_meta_data;
     }
@@ -125,7 +133,7 @@ class RestResponse implements \JsonSerializable
     /**
      * @return int
      */
-    public function getHttpStatusCode()
+    public function getHttpStatusCode() : int
     {
         return $this->_meta_data['status'];
     }
@@ -133,7 +141,7 @@ class RestResponse implements \JsonSerializable
     /**
      * @return bool
      */
-    public function isError()
+    public function isError() : bool
     {
         return $this->curlErrorNo || $this->status > 300;
     }
@@ -141,13 +149,14 @@ class RestResponse implements \JsonSerializable
     /**
      * @return string
      */
-    public function getNotification()
+    public function getNotification() : string
     {
         $httpMessages = preg_grep('/^HTTP/', array_keys($this->_meta_data['headers']));
         if ( empty($httpMessages) )
         {
-            return $this->status;
+            return (string)$this->status;
         }
+
         return $httpMessages[0];
     }
 }
