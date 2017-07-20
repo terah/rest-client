@@ -509,7 +509,7 @@ class RestClient implements RestClientInterface
         $httpCode           = curl_getinfo($this->curlObj, CURLINFO_HTTP_CODE);
         $curlError          = curl_error($this->curlObj);
         $curlErrNo          = curl_errno($this->curlObj);
-        $this->response     = $this->parseResponse($response, $httpCode, $curlError, $curlErrNo);
+        $this->response     = $this->parseResponse((string)$response, $httpCode, $curlError, $curlErrNo);
         if ( ! $this->ignoreErrors && $this->response->isError() )
         {
             $exceptionType      = $this->exceptionType;

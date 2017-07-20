@@ -1,4 +1,5 @@
 <?php declare(strict_types=1);
+
 namespace Terah\RestClient;
 
 class RestClientTest extends \PHPUnit_Framework_TestCase
