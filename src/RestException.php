@@ -4,6 +4,7 @@ namespace Terah\RestClient;
 
 class RestException extends \Exception
 {
+    /** @var RestResponse */
     protected $response = null;
 
     public function __construct($message='', $code=0, \Exception $previous=null, RestResponse $response)

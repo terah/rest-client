@@ -5,17 +5,14 @@ namespace Terah\RestClient;
 class RestClientMulti implements RestClientMultiInterface
 {
     /** @var resource */
-    protected $curlMultiObj = null;
+    protected $curlMultiObject  = null;
 
     /** @var RestClientInterface[] */
-    protected $restClients  = [];
-
-    /** @var resource[] */
-    protected $curlObjs     = [];
+    protected $restClients      = [];
 
     public function __construct()
     {
-        $this->curlMultiObj = curl_multi_init();
+        $this->curlMultiObject = curl_multi_init();
     }
 
     /**
@@ -25,7 +22,7 @@ class RestClientMulti implements RestClientMultiInterface
     public function addClient(RestClientInterface $restClient) : RestClientMultiInterface
     {
         $this->restClients[]    = $restClient;
-        curl_multi_add_handle($this->curlMultiObj, $restClient->getHandle());
+        curl_multi_add_handle($this->curlMultiObject, $restClient->getHandle());
 
         return $this;
     }
@@ -35,8 +32,9 @@ class RestClientMulti implements RestClientMultiInterface
      */
     public function execAll()
     {
-        do {
-            $status = curl_multi_exec($this->curlMultiObj, $running);
+        do
+        {
+            $status = curl_multi_exec($this->curlMultiObject, $running);
         }
         while ( $status === CURLM_CALL_MULTI_PERFORM || $running );
 
@@ -45,7 +43,7 @@ class RestClientMulti implements RestClientMultiInterface
         {
             $curlObj        = $restClient->getHandle();
             $responses[]    = $restClient->getPreBuiltResponse(true);
-            curl_multi_remove_handle($this->curlMultiObj, $curlObj);
+            curl_multi_remove_handle($this->curlMultiObject, $curlObj);
             curl_close($curlObj);
         }
 
@@ -54,10 +52,10 @@ class RestClientMulti implements RestClientMultiInterface
 
     public function destroy()
     {
-        if ( $this->curlMultiObj )
+        if ( $this->curlMultiObject )
         {
-            curl_multi_close($this->curlMultiObj);
-            $this->curlMultiObj = null;
+            curl_multi_close($this->curlMultiObject);
+            $this->curlMultiObject = null;
         }
         $this->restClients = [];
     }
