@@ -1,0 +1,77 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "036da8cdf2e666f8aad2edaae6961012",
+    "packages": [
+        {
+            "name": "terah/fluent-assert",
+            "version": "3.0.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/terah/fluent-assert.git",
+                "reference": "f0c1f9166e775752480b4b26b9d96cacbe500814"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/terah/fluent-assert/zipball/f0c1f9166e775752480b4b26b9d96cacbe500814",
+                "reference": "f0c1f9166e775752480b4b26b9d96cacbe500814",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "require-dev": {
+                "scrutinizer/ocular": "~1.1"
+            },
+            "bin": [
+                "bin/tester"
+            ],
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Terah\\Assert\\": "src"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Terry Cullen",
+                    "email": "terry@terah.com.au",
+                    "homepage": "http://terah.com.au",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A light weight assertion package based on beberlei/assert",
+            "homepage": "https://github.com/terah/fluent-assert",
+            "keywords": [
+                "fluent-assert",
+                "terah"
+            ],
+            "time": "2018-02-12T01:20:58+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.0"
+    },
+    "platform-dev": []
+}

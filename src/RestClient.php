@@ -513,6 +513,7 @@ class RestClient implements RestClientInterface
         if ( ! $this->ignoreErrors && $this->response->isError() )
         {
             $exceptionType      = $this->exceptionType;
+
             throw new $exceptionType($this->response->getNotification(), $this->response->getHttpStatusCode(), null, $this->response);
         }
 
