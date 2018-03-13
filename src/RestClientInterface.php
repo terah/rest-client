@@ -33,6 +33,13 @@ interface RestClientInterface
     public function data(array $data) : RestClientInterface;
 
     /**
+     * @param object|array $data
+     *
+     * @return RestClientInterface
+     */
+    public function dataObject($data) : RestClientInterface;
+
+    /**
      * @param string $username
      * @param string $password
      * @return RestClientInterface
@@ -49,7 +56,7 @@ interface RestClientInterface
      *
      * @return RestClientInterface
      */
-    public function method($method) : RestClientInterface;
+    public function method(string $method) : RestClientInterface;
 
     /**
      * @param string $format
@@ -97,6 +104,12 @@ interface RestClientInterface
      * @return RestClientInterface
      */
     public function exception(string $exception) : RestClientInterface;
+
+    /**
+     * @param string $responseType
+     * @return RestClientInterface
+     */
+    public function responseType(string $responseType) : RestClientInterface;
 
     /**
      * @param string

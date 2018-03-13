@@ -6,78 +6,81 @@ use function Terah\Assert\Assert;
 
 class RestClient implements RestClientInterface
 {
-    const FETCH             = 'GET';
-    const INSERT            = 'POST';
-    const UPDATE            = 'PUT';
-    const GET               = 'GET';
-    const POST              = 'POST';
-    const PUT               = 'PUT';
-    const DELETE            = 'DELETE';
+    const FETCH                 = 'GET';
+    const INSERT                = 'POST';
+    const UPDATE                = 'PUT';
+    const GET                   = 'GET';
+    const POST                  = 'POST';
+    const PUT                   = 'PUT';
+    const DELETE                = 'DELETE';
 
     /** @var int $serviceUrl */
-    protected $serviceUrl   = '';
+    protected $serviceUrl       = '';
 
     /** @var string $accessToken */
-    protected $accessToken  = '';
+    protected $accessToken      = '';
 
     /** @var string $authHeader */
-    protected $authHeader   = 'X-Auth-Token';
+    protected $authHeader       = 'X-Auth-Token';
 
     /** @var string $method */
-    protected $method       = 'GET';
+    protected $method           = 'GET';
 
     /** @var string $accept */
-    protected $accept       = 'json';
+    protected $accept           = 'json';
 
     /** @var string $contentType */
-    protected $contentType  = 'json';
+    protected $contentType      = 'json';
 
     /** @var string $version */
-    protected $version      = '1.0';
+    protected $version          = '1.0';
 
     /** @var array $headers */
-    protected $headers      = [];
+    protected $headers          = [];
 
     /** @var array $data */
-    protected $data         = [];
+    protected $data             = [];
 
     /** @var bool  */
-    protected $verbose      = false;
+    protected $verbose          = false;
 
     /** @var array */
-    protected $credentials  = [];
+    protected $credentials      = [];
 
     /** @var resource */
-    protected $curlObj      = null;
+    protected $curlObj          = null;
 
     /** @var string */
-    protected $exceptionType = 'Terah\RestClient\RestException';
+    protected $exceptionType    = RestException::class;
+
+    /** @var string */
+    protected $responseType     = RestResponse::class;
 
     /** @var null Used for error tracing */
-    protected $curlUrl      = '';
+    protected $curlUrl          = '';
 
     /** @var mixed Data to be sent to the service */
-    protected $curlData     = null;
+    protected $curlData         = null;
 
     /** @var RestResponse */
-    protected $response     = null;
+    protected $response         = null;
 
     /** @var bool */
-    protected $ignoreErrors = false;
+    protected $ignoreErrors     = false;
 
     /** @var array */
-    protected $formats      = [
-        'json'                  => [['application/json', 'application/x-json'], 'application/json'],
-        'xml'                   => [['text/xml', 'application/xml', 'application/x-xml'], 'application/xml'],
-        'txt'                   => [ ['text/plain'], 'application/x-www-form-urlencoded'],
-        'html'                  => [['text/html', 'application/xhtml+xml'], 'application/x-www-form-urlencoded'],
-        'png'                   => [['image/png'], 'image/png'],
-        'any'                   => [['*/*'], 'application/x-www-form-urlencoded'],
-        'js'                    => [['application/javascript', 'application/x-javascript', 'text/javascript'], 'application/javascript'],
-        'css'                   => [['text/css'], 'text/css'],
-        'rdf'                   => [['application/rdf+xml'], 'application/rdf+xml'],
-        'atom'                  => [['application/atom+xml'], 'application/atom+xml'],
-        'rss'                   => [['application/rss+xml'], 'application/rss+xml'],
+    protected $formats          = [
+        'json'                      => [['application/json', 'application/x-json'], 'application/json'],
+        'xml'                       => [['text/xml', 'application/xml', 'application/x-xml'], 'application/xml'],
+        'txt'                       => [ ['text/plain'], 'application/x-www-form-urlencoded'],
+        'html'                      => [['text/html', 'application/xhtml+xml'], 'application/x-www-form-urlencoded'],
+        'png'                       => [['image/png'], 'image/png'],
+        'any'                       => [['*/*'], 'application/x-www-form-urlencoded'],
+        'js'                        => [['application/javascript', 'application/x-javascript', 'text/javascript'], 'application/javascript'],
+        'css'                       => [['text/css'], 'text/css'],
+        'rdf'                       => [['application/rdf+xml'], 'application/rdf+xml'],
+        'atom'                      => [['application/atom+xml'], 'application/atom+xml'],
+        'rss'                       => [['application/rss+xml'], 'application/rss+xml'],
     ];
 
     /**
@@ -113,7 +116,7 @@ class RestClient implements RestClientInterface
      */
     public function header(string $name, string $value) : RestClientInterface
     {
-        $this->headers[$name] = $value;
+        $this->headers[$name]   = $value;
 
         return $this;
     }
@@ -140,7 +143,19 @@ class RestClient implements RestClientInterface
      */
     public function data(array $data) : RestClientInterface
     {
-        $this->data = $data;
+        $this->data             = $data;
+
+        return $this;
+    }
+
+    /**
+     * @param array $data
+     *
+     * @return RestClientInterface
+     */
+    public function dataObject($data) : RestClientInterface
+    {
+        $this->data             = $data;
 
         return $this;
     }
@@ -152,7 +167,7 @@ class RestClient implements RestClientInterface
      */
     public function credentials(string $username, string $password) : RestClientInterface
     {
-        $this->credentials = [$username, $password];
+        $this->credentials      = [$username, $password];
 
         return $this;
     }
@@ -162,11 +177,11 @@ class RestClient implements RestClientInterface
      */
     public function reset() : RestClientInterface
     {
-        $this->data         = [];
-        $this->method       = 'GET';
-        $this->curlObj      = null;
-        $this->response     = null;
-        $this->ignoreErrors = false;
+        $this->data             = [];
+        $this->method           = 'GET';
+        $this->curlObj          = null;
+        $this->response         = null;
+        $this->ignoreErrors     = false;
         $this->format('json');
         $this->header('X-Api-Version', '1.0');
 
@@ -178,10 +193,10 @@ class RestClient implements RestClientInterface
      *
      * @return RestClientInterface
      */
-    public function method($method) : RestClientInterface
+    public function method(string $method) : RestClientInterface
     {
-        $method         = strtoupper($method);
-        $this->method   = in_array($method, ['GET', 'POST', 'PUT', 'DELETE']) ? $method : 'GET';
+        $method                 = strtoupper($method);
+        $this->method           = in_array($method, ['GET', 'POST', 'PUT', 'DELETE']) ? $method : 'GET';
 
         return $this;
     }
@@ -193,7 +208,7 @@ class RestClient implements RestClientInterface
      */
     public function format(string $format, string $contentType='') : RestClientInterface
     {
-        $contentType    = $contentType ?: $format
+        $contentType            = $contentType ?: $format
         ;
         return $this->accept($format)->contentType($contentType);
     }
@@ -205,7 +220,7 @@ class RestClient implements RestClientInterface
      */
     public function accept(string $format) : RestClientInterface
     {
-        $this->accept = ! array_key_exists($format, $this->formats) ? 'json' : $format;
+        $this->accept           = ! array_key_exists($format, $this->formats) ? 'json' : $format;
 
         return $this;
     }
@@ -217,7 +232,8 @@ class RestClient implements RestClientInterface
      */
     public function contentType(string $format) : RestClientInterface
     {
-        $this->contentType = ! array_key_exists($format, $this->formats) ? 'json' : $format;
+        $this->contentType      = ! array_key_exists($format, $this->formats) ? 'json' : $format;
+
         return $this;
     }
 
@@ -228,7 +244,7 @@ class RestClient implements RestClientInterface
      */
     public function version(string $version) : RestClientInterface
     {
-        $this->version = $version;
+        $this->version          = $version;
 
         return $this;
     }
@@ -240,7 +256,7 @@ class RestClient implements RestClientInterface
      */
     public function verbose(bool $verbose=true) : RestClientInterface
     {
-        $this->verbose = (bool)$verbose;
+        $this->verbose          = (bool)$verbose;
 
         return $this;
     }
@@ -251,7 +267,7 @@ class RestClient implements RestClientInterface
      */
     public function ignoreErrors(bool $ignore=true) : RestClientInterface
     {
-        $this->ignoreErrors = $ignore;
+        $this->ignoreErrors     = $ignore;
 
         return $this;
     }
@@ -262,7 +278,18 @@ class RestClient implements RestClientInterface
      */
     public function exception(string $exception) : RestClientInterface
     {
-        $this->exceptionType = $exception;
+        $this->exceptionType    = $exception;
+
+        return $this;
+    }
+
+    /**
+     * @param string $responseType
+     * @return RestClientInterface
+     */
+    public function responseType(string $responseType) : RestClientInterface
+    {
+        $this->responseType    = $responseType;
 
         return $this;
     }
@@ -309,7 +336,7 @@ class RestClient implements RestClientInterface
      */
     public function sendRequest(string $entity='')
     {
-        $result = $this
+        $result                 = $this
             ->buildRequest($entity)
             ->curlExec();
         $this->reset();
@@ -328,7 +355,7 @@ class RestClient implements RestClientInterface
             ->setCurlOpt(CURLINFO_HEADER_OUT, true)
             ->buildRequest($entity)
             ->curlExec();
-        $rawRequest = $this->getCurlInfo(CURLINFO_HEADER_OUT);
+        $rawRequest             = $this->getCurlInfo(CURLINFO_HEADER_OUT);
         $this->reset();
 
         return $rawRequest;
@@ -354,7 +381,7 @@ class RestClient implements RestClientInterface
         $this
             ->buildRequest($entity)
             ->curlExec();
-        $response = $this->response;
+        $response               = $this->response;
         $this->reset();
 
         return $response;
@@ -366,9 +393,8 @@ class RestClient implements RestClientInterface
      */
     public function getPreBuiltResponse(bool $multi=false) : RestResponseInterface
     {
-        $this
-            ->curlExec($multi);
-        $response = $this->response;
+        $this->curlExec($multi);
+        $response               = $this->response;
         $this->reset();
 
         return $response;
@@ -404,8 +430,9 @@ class RestClient implements RestClientInterface
      */
     public function setCurlOpt($opt, $val) : RestClientInterface
     {
-        $this->curlObj = is_null($this->curlObj) ? curl_init() : $this->curlObj;
+        $this->curlObj          = is_null($this->curlObj) ? curl_init() : $this->curlObj;
         curl_setopt($this->curlObj, $opt, $val);
+
         return $this;
     }
 
@@ -429,20 +456,21 @@ class RestClient implements RestClientInterface
         }
         if ( $this->contentType === 'json' )
         {
-            $this->curlData = ! is_string($this->data) ? json_encode($this->data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) : $this->data;
+            $this->curlData         = ! is_string($this->data) ? json_encode($this->data, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) : $this->data;
+
             return $this->setCurlOpt(CURLOPT_POST, true)->setCurlOpt(CURLOPT_POSTFIELDS, $this->curlData);
         }
         if ( $this->contentType === 'xml' )
         {
             if ( is_array($this->data) )
             {
-                $xmlObj = new \SimpleXMLElement("<?xml version=\"1.0\"?><response></response>");
+                $xmlObj                 = new \SimpleXMLElement("<?xml version=\"1.0\"?><response></response>");
                 $this->arrayToXml($this->data, $xmlObj);
-                $this->curlData   = $xmlObj->asXML();
+                $this->curlData         = $xmlObj->asXML();
             }
             return $this->setCurlOpt(CURLOPT_POST, true)->setCurlOpt(CURLOPT_POSTFIELDS, $this->curlData);
         }
-        $this->curlData = is_array($this->data) ? http_build_query($this->data) : $this->data;
+        $this->curlData         = is_array($this->data) ? http_build_query($this->data) : $this->data;
 
         return $this->setCurlOpt(CURLOPT_POST, true)->setCurlOpt(CURLOPT_POSTFIELDS, $this->curlData);
     }
@@ -668,7 +696,9 @@ class RestClient implements RestClientInterface
      */
     protected function getResponseObj() : RestResponseInterface
     {
-        return new RestResponse();
+        $type                   = $this->responseType;
+
+        return new $type();
     }
 
     /**
