@@ -208,8 +208,8 @@ class RestClient implements RestClientInterface
      */
     public function format(string $format, string $contentType='') : RestClientInterface
     {
-        $contentType            = $contentType ?: $format
-        ;
+        $contentType            = $contentType ?: $format;
+        
         return $this->accept($format)->contentType($contentType);
     }
 
