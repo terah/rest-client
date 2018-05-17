@@ -514,16 +514,18 @@ class RestClient implements RestClientInterface
             if ( ! is_array($value) )
             {
                 $xmlObj->addChild("$key", htmlspecialchars("$value"));
+
                 continue;
             }
             if ( ! is_numeric($key) )
             {
-                $subnode = $xmlObj->addChild("$key");
-                $this->arrayToXml($value, $subnode);
+                $subNode            = $xmlObj->addChild("$key");
+                $this->arrayToXml($value, $subNode);
+
                 continue;
             }
-            $subnode = $xmlObj->addChild("item$key");
-            $this->arrayToXml($value, $subnode);
+            $subNode            = $xmlObj->addChild("item$key");
+            $this->arrayToXml($value, $subNode);
         }
     }
 
@@ -560,7 +562,7 @@ class RestClient implements RestClientInterface
         list($headers, $body)       = $this->parseHeadersAndBody($response);
         $response                   = [
             'method'                    => $this->method,
-            'status'                    => $httpStatusCode,
+            'status'                    => $httpStatusCode ?: 500,
             'body'                      => $body,
             'headers'                   => $headers,
             'curlError'                 => $curlError,
