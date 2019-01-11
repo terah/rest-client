@@ -11,7 +11,7 @@
             "version": "3.0.0.8",
             "source": {
                 "type": "git",
-                "url": "https://github.com/terah/fluent-assert.git",
+                "url": "https://bitbucket.org/terahdigital/fluent-assert.git",
                 "reference": "f0c1f9166e775752480b4b26b9d96cacbe500814"
             },
             "dist": {
@@ -56,7 +56,7 @@
                 }
             ],
             "description": "A light weight assertion package based on beberlei/assert",
-            "homepage": "https://github.com/terah/fluent-assert",
+            "homepage": "https://bitbucket.org/terahdigital/fluent-assert",
             "keywords": [
                 "fluent-assert",
                 "terah"
