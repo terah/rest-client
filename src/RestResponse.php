@@ -2,7 +2,7 @@
 
 namespace Terah\RestClient;
 
-use function Terah\Assert\Assert;
+use Terah\Asrt\Asrt;
 
 /**
  * Class RestResponse
@@ -108,7 +108,7 @@ class RestResponse implements \JsonSerializable, RestResponseInterface
      */
     public function get(string $name)
     {
-        Assert($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
+        Asrt::that($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
 
         return $this->_meta_data[$name];
     }

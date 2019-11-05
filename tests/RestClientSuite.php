@@ -2,7 +2,7 @@
 
 namespace Terah\RestClient\Test;
 
-use Terah\Assert\Assert;
+use Terah\Asrt\Asrt;
 use Terah\Assert\Tester;
 use Terah\Assert\Suite;
 use Terah\RestClient\RestClient;
@@ -28,15 +28,15 @@ Tester::suite('RestClientSuite')
         $headers    = $response->get('headers');
         $method     = $response->get('method');
 
-        (new Assert($body))->isObject()->propertiesExist(['userId', 'id', 'title', 'body']);
-        (new Assert($body->userId))->id();
-        (new Assert($body->id))->id();
-        (new Assert($body->title))->string()->notEmpty();
-        (new Assert($body->body))->string()->notEmpty();
+        Asrt::that($body)->isObject()->propertiesExist(['userId', 'id', 'title', 'body']);
+        Asrt::that($body->userId)->id();
+        Asrt::that($body->id)->id();
+        Asrt::that($body->title)->isString()->notEmpty();
+        Asrt::that($body->body)->isString()->notEmpty();
 
-        (new Assert($status))->eq(200);
-        (new Assert($headers))->isArray()->notEmpty();
-        (new Assert($method))->string()->eq('GET');
+        Asrt::that($status)->eq(200);
+        Asrt::that($headers)->isArray()->notEmpty();
+        Asrt::that($method)->isString()->eq('GET');
 
 
     })
@@ -63,15 +63,15 @@ Tester::suite('RestClientSuite')
         $headers    = $response->get('headers');
         $method     = $response->get('method');
 
-        (new Assert($body))->isObject()->propertiesExist(['userId', 'id', 'title', 'body']);
-        (new Assert($body->userId))->id()->eq($post['userId']);
-        (new Assert($body->id))->id()->eq($post['id']);
-        (new Assert($body->title))->string()->notEmpty()->eq($post['title']);
-        (new Assert($body->body))->string()->notEmpty()->eq($post['body']);
+        Asrt::that($body)->isObject()->propertiesExist(['userId', 'id', 'title', 'body']);
+        Asrt::that($body->userId)->id()->eq($post['userId']);
+        Asrt::that($body->id)->id()->eq($post['id']);
+        Asrt::that($body->title)->isString()->notEmpty()->eq($post['title']);
+        Asrt::that($body->body)->isString()->notEmpty()->eq($post['body']);
 
-        (new Assert($status))->eq(200);
-        (new Assert($headers))->isArray()->notEmpty();
-        (new Assert($method))->string()->eq('PUT');
+        Asrt::that($status)->eq(200);
+        Asrt::that($headers)->isArray()->notEmpty();
+        Asrt::that($method)->isString()->eq('PUT');
 
 
     })

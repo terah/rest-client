@@ -2,7 +2,7 @@
 
 namespace Terah\RestClient;
 
-use function Terah\Assert\Assert;
+use Terah\Asrt\Asrt;
 
 class RestClient implements RestClientInterface
 {
@@ -92,7 +92,7 @@ class RestClient implements RestClientInterface
      */
     public function __construct(string $serviceUrl, string $accessToken='', string $authHeader='', string $username='', string $password='')
     {
-        Assert($serviceUrl)->notEmpty('The service URL was not specified.')->url('The service URL is not a URL.');
+        Asrt::that($serviceUrl)->notEmpty('The service URL was not specified.')->url('The service URL is not a URL.');
         $this->serviceUrl       = $serviceUrl;//preg_replace('/\/$/', '', $serviceUrl) . '/';
         $this->accessToken      = $accessToken;
         $this->authHeader       = $authHeader ?: $this->authHeader;
