@@ -3,8 +3,8 @@
 namespace Terah\RestClient\Test;
 
 use Terah\Asrt\Asrt;
-use Terah\Assert\Tester;
-use Terah\Assert\Suite;
+use Terah\Tester\Tester;
+use Terah\Tester\Suite;
 use Terah\RestClient\RestClient;
 
 Tester::suite('RestClientSuite')
