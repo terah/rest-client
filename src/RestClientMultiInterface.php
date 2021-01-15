@@ -5,15 +5,13 @@ namespace Terah\RestClient;
 
 interface RestClientMultiInterface
 {
-    /**
-     * @param RestClientInterface $restClient
-     * @return RestClientMultiInterface
-     */
     public function addClient(RestClientInterface $restClient) : RestClientMultiInterface;
+
+
     /**
      * @return RestResponseInterface[]
      */
-    public function execAll();
+    public function execAll() : array;
 
     public function destroy();
 }

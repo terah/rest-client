@@ -2,7 +2,8 @@
 
 namespace Terah\RestClient;
 
-use Terah\Asrt\Asrt;
+use JsonSerializable;
+use Terah\Assert\Assert;
 
 /**
  * Class RestResponse
@@ -15,12 +16,9 @@ use Terah\Asrt\Asrt;
  * @property string curlError
  * @property int curlErrorNo
  */
-class RestResponse implements \JsonSerializable, RestResponseInterface
+class RestResponse implements JsonSerializable, RestResponseInterface
 {
-    /**
-     * @var array
-     */
-    protected $_meta_data   = [
+    protected array $_meta_data   = [
         'method'                => '',
         'status'                => 200,
         'body'                  => null,
@@ -29,9 +27,7 @@ class RestResponse implements \JsonSerializable, RestResponseInterface
         'curlErrorNo'           => null,
     ];
 
-    /**
-     * @param array $data
-     */
+
     public function __construct(array $data=[])
     {
         $this->setArray($data);
@@ -45,10 +41,7 @@ class RestResponse implements \JsonSerializable, RestResponseInterface
         return $this->_meta_data['body'];
     }
 
-    /**
-     * @param array $data
-     * @return RestResponseInterface
-     */
+
     public function setArray(array $data) : RestResponseInterface
     {
         foreach ( $data as $name => $value )
@@ -59,21 +52,13 @@ class RestResponse implements \JsonSerializable, RestResponseInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @param array $args
-     * @return RestResponseInterface
-     */
+
     public function __call(string $name, array $args) : RestResponseInterface
     {
         return $this->set($name, $args[0]);
     }
 
-    /**
-     * @param string $name
-     * @param $value
-     * @return RestResponseInterface
-     */
+
     public function set(string $name, $value) : RestResponseInterface
     {
         // We don't want this throwing exceptions in invalid keys
@@ -108,47 +93,36 @@ class RestResponse implements \JsonSerializable, RestResponseInterface
      */
     public function get(string $name)
     {
-        Asrt::that($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
+        Assert::that($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
 
         return $this->_meta_data[$name];
     }
 
-    /**
-     * @return array
-     */
+
     public function toArray() : array
     {
         return $this->_meta_data;
     }
 
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
+
+    public function jsonSerialize() : array
     {
         return $this->_meta_data;
     }
 
 
-    /**
-     * @return int
-     */
     public function getHttpStatusCode() : int
     {
         return $this->_meta_data['status'];
     }
 
-    /**
-     * @return bool
-     */
+
     public function isError() : bool
     {
         return $this->curlErrorNo || $this->status > 300;
     }
 
-    /**
-     * @return string
-     */
+
     public function getNotification() : string
     {
         $httpMessages = preg_grep('/^HTTP/', array_keys($this->_meta_data['headers']));

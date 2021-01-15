@@ -2,97 +2,76 @@
 
 namespace Terah\RestClient;
 
-use Terah\Asrt\Asrt;
+use SimpleXMLElement;
+use Terah\Assert\Assert;
 
 class RestClient implements RestClientInterface
 {
-    const FETCH                 = 'GET';
-    const INSERT                = 'POST';
-    const UPDATE                = 'PUT';
-    const GET                   = 'GET';
-    const POST                  = 'POST';
-    const PUT                   = 'PUT';
-    const DELETE                = 'DELETE';
+    const FETCH                     = 'GET';
+    const INSERT                    = 'POST';
+    const UPDATE                    = 'PUT';
+    const GET                       = 'GET';
+    const POST                      = 'POST';
+    const PUT                       = 'PUT';
+    const DELETE                    = 'DELETE';
 
-    /** @var int $serviceUrl */
-    protected $serviceUrl       = '';
+    protected string $serviceUrl    = '';
 
-    /** @var string $accessToken */
-    protected $accessToken      = '';
+    protected string $accessToken   = '';
 
-    /** @var string $authHeader */
-    protected $authHeader       = 'X-Auth-Token';
+    protected string $authHeader    = 'X-Auth-Token';
 
-    /** @var string $method */
-    protected $method           = 'GET';
+    protected string $method        = 'GET';
 
-    /** @var string $accept */
-    protected $accept           = 'json';
+    protected string $accept        = 'json';
 
-    /** @var string $contentType */
-    protected $contentType      = 'json';
+    protected string $contentType   = 'json';
 
-    /** @var string $version */
-    protected $version          = '1.0';
+    protected string $version       = '1.0';
 
-    /** @var array $headers */
-    protected $headers          = [];
+    protected array $headers        = [];
 
-    /** @var array $data */
-    protected $data             = [];
+    protected array $data           = [];
 
-    /** @var bool  */
-    protected $verbose          = false;
+    protected bool $verbose         = false;
 
-    /** @var array */
-    protected $credentials      = [];
+    protected array $credentials    = [];
 
     /** @var resource */
     protected $curlObj          = null;
 
-    /** @var string */
-    protected $exceptionType    = RestException::class;
+    protected string $exceptionType = RestException::class;
 
-    /** @var string */
-    protected $responseType     = RestResponse::class;
+    protected string $responseType  = RestResponse::class;
 
-    /** @var null Used for error tracing */
-    protected $curlUrl          = '';
+    protected string $curlUrl       = '';
 
     /** @var mixed Data to be sent to the service */
     protected $curlData         = null;
 
-    /** @var RestResponse */
-    protected $response         = null;
+    protected ?RestResponse $response = null;
 
-    /** @var bool */
-    protected $ignoreErrors     = false;
+    protected bool $ignoreErrors    = false;
 
-    /** @var array */
-    protected $formats          = [
-        'json'                      => [['application/json', 'application/x-json'], 'application/json'],
-        'xml'                       => [['text/xml', 'application/xml', 'application/x-xml'], 'application/xml'],
-        'txt'                       => [ ['text/plain'], 'application/x-www-form-urlencoded'],
-        'html'                      => [['text/html', 'application/xhtml+xml'], 'application/x-www-form-urlencoded'],
-        'png'                       => [['image/png'], 'image/png'],
-        'any'                       => [['*/*'], 'application/x-www-form-urlencoded'],
-        'js'                        => [['application/javascript', 'application/x-javascript', 'text/javascript'], 'application/javascript'],
-        'css'                       => [['text/css'], 'text/css'],
-        'rdf'                       => [['application/rdf+xml'], 'application/rdf+xml'],
-        'atom'                      => [['application/atom+xml'], 'application/atom+xml'],
-        'rss'                       => [['application/rss+xml'], 'application/rss+xml'],
+    protected array $formats        = [
+        'json'                          => [['application/json', 'application/x-json'], 'application/json'],
+        'xml'                           => [['text/xml', 'application/xml', 'application/x-xml'], 'application/xml'],
+        'txt'                           => [ ['text/plain'], 'application/x-www-form-urlencoded'],
+        'html'                          => [['text/html', 'application/xhtml+xml'], 'application/x-www-form-urlencoded'],
+        'png'                           => [['image/png'], 'image/png'],
+        'any'                           => [['*/*'], 'application/x-www-form-urlencoded'],
+        'js'                            => [['application/javascript', 'application/x-javascript', 'text/javascript'], 'application/javascript'],
+        'css'                           => [['text/css'], 'text/css'],
+        'rdf'                           => [['application/rdf+xml'], 'application/rdf+xml'],
+        'atom'                          => [['application/atom+xml'], 'application/atom+xml'],
+        'rss'                           => [['application/rss+xml'], 'application/rss+xml'],
+        'stream'                        => [['application/octet-stream']],
     ];
 
-    /**
-     * @param string $serviceUrl
-     * @param string $accessToken
-     * @param string $authHeader
-     * @param string $username
-     * @param string $password
-     */
+
     public function __construct(string $serviceUrl, string $accessToken='', string $authHeader='', string $username='', string $password='')
     {
-        Asrt::that($serviceUrl)->notEmpty('The service URL was not specified.')->url('The service URL is not a URL.');
+        Assert::that($serviceUrl)->notEmpty('The service URL was not specified.')->url('The service URL is not a URL.');
         $this->serviceUrl       = $serviceUrl;//preg_replace('/\/$/', '', $serviceUrl) . '/';
         $this->accessToken      = $accessToken;
         $this->authHeader       = $authHeader ?: $this->authHeader;
@@ -108,12 +87,7 @@ class RestClient implements RestClientInterface
         return $this->curlObj;
     }
 
-    /**
-     * @param $name
-     * @param $value
-     *
-     * @return RestClientInterface
-     */
+
     public function header(string $name, string $value) : RestClientInterface
     {
         $this->headers[$name]   = $value;
@@ -121,11 +95,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param array $headers
-     *
-     * @return RestClientInterface
-     */
+
     public function headers(array $headers) : RestClientInterface
     {
         foreach ( $headers as $name => $value )
@@ -136,11 +106,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param array $data
-     *
-     * @return RestClientInterface
-     */
+
     public function data(array $data) : RestClientInterface
     {
         $this->data             = $data;
@@ -149,7 +115,7 @@ class RestClient implements RestClientInterface
     }
 
     /**
-     * @param array $data
+     * @param array|object $data
      *
      * @return RestClientInterface
      */
@@ -160,11 +126,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $username
-     * @param string $password
-     * @return RestClientInterface
-     */
+
     public function credentials(string $username, string $password) : RestClientInterface
     {
         $this->credentials      = [$username, $password];
@@ -172,9 +134,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @return RestClientInterface
-     */
+
     public function reset() : RestClientInterface
     {
         $this->data             = [];
@@ -188,11 +148,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param $method
-     *
-     * @return RestClientInterface
-     */
+
     public function method(string $method) : RestClientInterface
     {
         $method                 = strtoupper($method);
@@ -201,23 +157,15 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $format
-     * @param string $contentType
-     * @return RestClientInterface
-     */
+
     public function format(string $format, string $contentType='') : RestClientInterface
     {
         $contentType            = $contentType ?: $format;
-        
+
         return $this->accept($format)->contentType($contentType);
     }
 
-    /**
-     * @param string $format
-     *
-     * @return RestClientInterface
-     */
+
     public function accept(string $format) : RestClientInterface
     {
         $this->accept           = ! array_key_exists($format, $this->formats) ? 'json' : $format;
@@ -225,11 +173,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $format
-     *
-     * @return RestClientInterface
-     */
+
     public function contentType(string $format) : RestClientInterface
     {
         $this->contentType      = ! array_key_exists($format, $this->formats) ? 'json' : $format;
@@ -237,11 +181,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $version
-     *
-     * @return RestClientInterface
-     */
+
     public function version(string $version) : RestClientInterface
     {
         $this->version          = $version;
@@ -249,11 +189,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param bool $verbose
-     *
-     * @return RestClientInterface
-     */
+
     public function verbose(bool $verbose=true) : RestClientInterface
     {
         $this->verbose          = (bool)$verbose;
@@ -261,10 +197,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param bool $ignore
-     * @return RestClientInterface
-     */
+
     public function ignoreErrors(bool $ignore=true) : RestClientInterface
     {
         $this->ignoreErrors     = $ignore;
@@ -272,10 +205,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $exception
-     * @return RestClientInterface
-     */
+
     public function exception(string $exception) : RestClientInterface
     {
         $this->exceptionType    = $exception;
@@ -283,10 +213,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string $responseType
-     * @return RestClientInterface
-     */
+
     public function responseType(string $responseType) : RestClientInterface
     {
         $this->responseType    = $responseType;
@@ -351,7 +278,7 @@ class RestClient implements RestClientInterface
     public function getRawRequest(string $entity='')
     {
         $this
-            ->ignoreErrors(true)
+            ->ignoreErrors()
             ->setCurlOpt(CURLINFO_HEADER_OUT, true)
             ->buildRequest($entity)
             ->curlExec();
@@ -361,15 +288,7 @@ class RestClient implements RestClientInterface
         return $rawRequest;
     }
 
-    /**
-     * @param string $entity
-     * @return RestResponseInterface
-     */
-    /**
-     * @param string $entity
-     * @param bool $ignoreErrors
-     * @return RestResponseInterface
-     */
+
     public function getResponse(string $entity='', bool $ignoreErrors=false) : RestResponseInterface
     {
         if ( $ignoreErrors )
@@ -387,10 +306,7 @@ class RestClient implements RestClientInterface
         return $response;
     }
 
-    /**
-     * @param bool $multi
-     * @return RestResponseInterface
-     */
+
     public function getPreBuiltResponse(bool $multi=false) : RestResponseInterface
     {
         $this->curlExec($multi);
@@ -400,10 +316,7 @@ class RestClient implements RestClientInterface
         return $response;
     }
 
-    /**
-     * @param string $entity
-     * @return RestClientInterface
-     */
+
     public function buildRequest(string $entity='') : RestClientInterface
     {
         $this
@@ -416,6 +329,9 @@ class RestClient implements RestClientInterface
             ->setCurlOpt(CURLOPT_SSL_VERIFYPEER, false)
             ->setCurlOpt(CURLOPT_CUSTOMREQUEST, $this->method)
             ->setCurlOpt(CURLOPT_ENCODING, '')
+            ->setCurlOpt(CURLOPT_TIMEOUT, 60 * 30) //timeout in seconds
+            ->setCurlOpt(CURLOPT_CONNECTTIMEOUT, 60 * 30) //timeout in seconds
+            ->setCurlOpt(CURLOPT_NOSIGNAL, 1) //timeout in seconds
             ->setCurlBasicAuth()
             ->setCurlCookies()
             ->setCurlData();
@@ -428,7 +344,7 @@ class RestClient implements RestClientInterface
      * @param mixed $val
      * @return RestClientInterface
      */
-    public function setCurlOpt($opt, $val) : RestClientInterface
+    public function setCurlOpt(int $opt, $val) : RestClientInterface
     {
         $this->curlObj          = is_null($this->curlObj) ? curl_init() : $this->curlObj;
         curl_setopt($this->curlObj, $opt, $val);
@@ -440,14 +356,12 @@ class RestClient implements RestClientInterface
      * @param int $opt
      * @return mixed
      */
-    protected function getCurlInfo($opt)
+    protected function getCurlInfo(int $opt)
     {
         return curl_getinfo($this->curlObj, $opt);
     }
 
-    /**
-     * @return RestClientInterface
-     */
+
     public function setCurlData() : RestClientInterface
     {
         if ( ! in_array(strtoupper($this->method), ['POST', 'PUT']) )
@@ -464,7 +378,7 @@ class RestClient implements RestClientInterface
         {
             if ( is_array($this->data) )
             {
-                $xmlObj                 = new \SimpleXMLElement("<?xml version=\"1.0\"?><response></response>");
+                $xmlObj                 = new SimpleXMLElement("<?xml version=\"1.0\"?><response></response>");
                 $this->arrayToXml($this->data, $xmlObj);
                 $this->curlData         = $xmlObj->asXML();
             }
@@ -475,9 +389,7 @@ class RestClient implements RestClientInterface
         return $this->setCurlOpt(CURLOPT_POST, true)->setCurlOpt(CURLOPT_POSTFIELDS, $this->curlData);
     }
 
-    /**
-     * @return RestClientInterface
-     */
+
     public function setCurlBasicAuth() : RestClientInterface
     {
         list($username, $password) = $this->credentials;
@@ -489,9 +401,7 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @return RestClientInterface
-     */
+
     public function setCurlCookies() : RestClientInterface
     {
         // This allows me to debug api request originating from the phpunit test case
@@ -503,11 +413,8 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param array $data
-     * @param \SimpleXMLElement $xmlObj
-     */
-    protected function arrayToXml($data, &$xmlObj)
+
+    protected function arrayToXml(array $data, SimpleXMLElement $xmlObj)
     {
         foreach ( $data as $key => $value )
         {
@@ -550,13 +457,7 @@ class RestClient implements RestClientInterface
         return $this->response->body;
     }
 
-    /**
-     * @param string $response
-     * @param int $httpStatusCode
-     * @param string $curlError
-     * @param int $curlErrorNo
-     * @return RestResponseInterface
-     */
+
     public function parseResponse(string $response, int $httpStatusCode, string $curlError, int $curlErrorNo) : RestResponseInterface
     {
         list($headers, $body)       = $this->parseHeadersAndBody($response);
@@ -585,10 +486,7 @@ class RestClient implements RestClientInterface
         return $this->getResponseObj()->setArray($response);
     }
 
-    /**
-     * @param string $responseText
-     * @return array
-     */
+
     protected function parseHeadersAndBody(string $responseText) : array
     {
         if ( ! $responseText )
@@ -616,11 +514,7 @@ class RestClient implements RestClientInterface
         return [$headers, $body];
     }
 
-    /**
-     * @param  array $headers
-     * @param  string $defaultContentType
-     * @return string  string
-     */
+
     protected function parseContentType(array $headers, string $defaultContentType) : string
     {
         foreach ( $headers as $header => $value )
@@ -653,10 +547,6 @@ class RestClient implements RestClientInterface
     }
 
 
-    /**
-     * @param $entity
-     * @return string
-     */
     protected function getUrl(string $entity) : string
     {
         $entity         = preg_replace('/^\//', '', $entity);
@@ -670,9 +560,7 @@ class RestClient implements RestClientInterface
         return $this->curlUrl;
     }
 
-    /**
-     * @return array
-     */
+
     protected function getHeaders() : array
     {
         $this->header('Accept', $this->formats[$this->accept][0][0]);
@@ -693,9 +581,7 @@ class RestClient implements RestClientInterface
         return $headers;
     }
 
-    /**
-     * @return RestResponseInterface
-     */
+
     protected function getResponseObj() : RestResponseInterface
     {
         $type                   = $this->responseType;
@@ -703,32 +589,28 @@ class RestClient implements RestClientInterface
         return new $type();
     }
 
-    /**
-     * @param \SimpleXMLElement $xmlObject
-     * @param array $out
-     * @return array
-     */
-    protected function xml2array(\SimpleXMLElement $xmlObject, array $out=[]) : array
+
+    protected function xml2array(SimpleXMLElement $xmlObject, array $out=[]) : array
     {
         foreach( $xmlObject->attributes() as $attr => $val )
         {
             $out['@attributes'][$attr] = (string)$val;
         }
-        $hasChildren = false;
+        $hasChildren            = false;
         foreach( $xmlObject as $index => $node )
         {
-            $hasChildren     = true;
-            $out[$index][]  = $this->xml2array($node);
+            $hasChildren            = true;
+            $out[$index][]          = $this->xml2array($node);
         }
         if ( ! $hasChildren && $val = (string)$xmlObject )
         {
-            $out['@value'] = $val;
+            $out['@value']          = $val;
         }
-        foreach ( $out as $key => $vals )
+        foreach ( $out as $key => $values )
         {
-            if ( is_array($vals) && count($vals) === 1 && array_key_exists(0, $vals) )
+            if ( is_array($values) && count($values) === 1 && array_key_exists(0, $values) )
             {
-                $out[$key] = $vals[0];
+                $out[$key]              = $values[0];
             }
         }
 

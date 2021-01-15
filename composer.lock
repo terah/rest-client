@@ -37,7 +37,7 @@
             },
             "autoload": {
                 "psr-4": {
-                    "Terah\\Asrt\\": "src"
+                    "Terah\\Assert\\": "src"
                 },
                 "files": [
                     "src/functions.php"

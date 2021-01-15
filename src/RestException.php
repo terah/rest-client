@@ -2,21 +2,20 @@
 
 namespace Terah\RestClient;
 
-class RestException extends \Exception
-{
-    /** @var RestResponse */
-    protected $response = null;
+use Exception;
 
-    public function __construct($message='', $code=0, \Exception $previous=null, RestResponse $response)
+class RestException extends Exception
+{
+    protected RestResponse $response;
+
+    public function __construct(string $message, int $code, ?Exception $previous, RestResponse $response)
     {
         $this->response = $response;
         parent::__construct($message, $code, $previous);
     }
 
-    /**
-     * @return RestResponse
-     */
-    public function getResponse()
+
+    public function getResponse() : RestResponse
     {
         return $this->response;
     }

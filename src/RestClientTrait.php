@@ -4,8 +4,7 @@ namespace Terah\RestClient;
 
 trait RestClientTrait
 {
-    /** @var RestClient */
-    protected $restClient;
+    protected RestClientInterface $restClient;
 
     /**
      * Sets a cache.

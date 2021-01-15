@@ -16,8 +16,8 @@
         }
     ],
     "require": {
-        "php" : ">=7.0",
-        "ext-terah": "*"
+        "php" : ">=7.4",
+        "terah/fluent-assert": "6.*"
     },
     "require-dev": {
 
