@@ -6,24 +6,14 @@ trait RestClientTrait
 {
     protected RestClientInterface $restClient;
 
-    /**
-     * Sets a cache.
-     *
-     * @param RestClientInterface $restClient
-     * @return $this
-     */
-    public function setRestClient(RestClientInterface $restClient)
+    public function setRestClient(RestClientInterface $restClient) : static
     {
         $this->restClient = $restClient;
 
         return $this;
     }
 
-    /**
-     * Gets a client.
-     *
-     * @return RestClientInterface
-     */
+
     public function getRestClient() : RestClientInterface
     {
         return $this->restClient;

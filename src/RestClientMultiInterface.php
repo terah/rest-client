@@ -13,5 +13,5 @@ interface RestClientMultiInterface
      */
     public function execAll() : array;
 
-    public function destroy();
+    public function destroy() : void;
 }

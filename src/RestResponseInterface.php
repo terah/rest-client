@@ -9,24 +9,14 @@ interface RestResponseInterface
 
     public function __call(string $name, array $args) : RestResponseInterface;
 
-    /**
-     * @param string $name
-     * @param mixed $value
-     * @return RestResponseInterface
-     */
-    public function set(string $name, $value) : RestResponseInterface;
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get(string $name);
+    public function set(string $name, mixed $value) : RestResponseInterface;
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function get(string $name);
+
+    public function __get(string $name) : mixed;
+
+ 
+    public function get(string $name) : mixed;
 
 
     public function toArray() : array;
@@ -43,10 +33,7 @@ interface RestResponseInterface
 
     public function getNotification() : string;
 
-
-    /**
-     * @return mixed
-     */
-    public function getBody();
+    
+    public function getBody() : mixed;
 
 }

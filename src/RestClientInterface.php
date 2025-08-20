@@ -55,41 +55,23 @@ interface RestClientInterface
 
     public function responseType(string $responseType) : RestClientInterface;
 
-    /**
-     * @param string
-     * @return mixed
-     */
-    public function post(string $entity='');
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function get(string $entity='');
+    public function post(string $entity='') : mixed;
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function put(string $entity='');
+  
+    public function get(string $entity='') : mixed;
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function delete(string $entity='');
+    
+    public function put(string $entity='') : mixed;
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function sendRequest(string $entity='');
+  
+    public function delete(string $entity='') : mixed;
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function getRawRequest(string $entity='');
+
+    public function sendRequest(string $entity='') : mixed;
+
+
+    public function getRawRequest(string $entity='') : mixed;
 
 
     public function getResponse(string $entity='', bool $ignoreErrors=false) : RestResponseInterface;
@@ -100,21 +82,14 @@ interface RestClientInterface
 
     public function buildRequest(string $entity='') : RestClientInterface;
 
-    /**
-     * @param bool $isMulti
-     * @return mixed
-     */
-    public function curlExec(bool $isMulti=false);
+
+    public function curlExec(bool $isMulti=false) : mixed;
 
 
     public function parseResponse(string $response, int $httpStatusCode, string $curlError, int $curlErrorNo) : RestResponseInterface;
 
-    /**
-     * @param int $opt
-     * @param mixed $val
-     * @return RestClientInterface
-     */
-    public function setCurlOpt(int $opt, $val) : RestClientInterface;
+
+    public function setCurlOpt(int $opt, mixed $val) : RestClientInterface;
 
 
     public function setCurlBasicAuth() : RestClientInterface;

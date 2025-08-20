@@ -18,10 +18,7 @@ class RestClientMulti implements RestClientMultiInterface
         $this->curlMultiObject  = curl_multi_init();
     }
 
-    /**
-     * @param RestClientInterface $restClient
-     * @return RestClientMultiInterface
-     */
+
     public function addClient(RestClientInterface $restClient) : RestClientMultiInterface
     {
         $handle                 = $restClient->getHandle();
@@ -31,6 +28,7 @@ class RestClientMulti implements RestClientMultiInterface
 
         return $this;
     }
+
 
     /**
      * @return array|RestResponseInterface[]
@@ -55,10 +53,7 @@ class RestClientMulti implements RestClientMultiInterface
         return $responses;
     }
 
-    /**
-     * @param Closure $callback
-     * @return bool
-     */
+
     public function execAndApplyCallback(Closure $callback) : bool
     {
         do {
@@ -85,6 +80,7 @@ class RestClientMulti implements RestClientMultiInterface
 
         return true;
     }
+
 
     function rolling_curl(array $urls, Closure $callback, ?array $custom_options = null) : bool
     {
@@ -151,7 +147,8 @@ class RestClientMulti implements RestClientMultiInterface
         return true;
     }
 
-    public function destroy()
+
+    public function destroy() : void
     {
         if ( $this->curlMultiObject )
         {
@@ -160,6 +157,7 @@ class RestClientMulti implements RestClientMultiInterface
         }
         $this->restClients = [];
     }
+
 
     public function __destruct()
     {

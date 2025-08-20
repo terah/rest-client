@@ -33,10 +33,8 @@ class RestResponse implements JsonSerializable, RestResponseInterface
         $this->setArray($data);
     }
 
-    /**
-     * @return mixed
-     */
-    public function getBody()
+ 
+    public function getBody() : mixed
     {
         return $this->_meta_data['body'];
     }
@@ -78,20 +76,14 @@ class RestResponse implements JsonSerializable, RestResponseInterface
         return $this;
     }
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function __get(string $name)
+ 
+    public function __get(string $name) : mixed
     {
         return $this->get($name);
     }
 
-    /**
-     * @param string $name
-     * @return mixed
-     */
-    public function get(string $name)
+
+    public function get(string $name) : mixed
     {
         Assert::that($this->_meta_data)->keyExists($name, "Invalid property ({$name}) sent to response meta");
 
@@ -125,7 +117,7 @@ class RestResponse implements JsonSerializable, RestResponseInterface
 
     public function getNotification() : string
     {
-        $httpMessages = preg_grep('/^HTTP/', array_keys($this->_meta_data['headers']));
+        $httpMessages           = preg_grep('/^HTTP/', array_keys($this->_meta_data['headers']));
         if ( empty($httpMessages) )
         {
             return (string)$this->status;

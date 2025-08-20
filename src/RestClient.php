@@ -7,51 +7,52 @@ use Terah\Assert\Assert;
 
 class RestClient implements RestClientInterface
 {
-    const FETCH                     = 'GET';
-    const INSERT                    = 'POST';
-    const UPDATE                    = 'PUT';
-    const GET                       = 'GET';
-    const POST                      = 'POST';
-    const PUT                       = 'PUT';
-    const DELETE                    = 'DELETE';
+    const FETCH                         = 'GET';
+    const INSERT                        = 'POST';
+    const UPDATE                        = 'PUT';
+    const GET                           = 'GET';
+    const POST                          = 'POST';
+    const PUT                           = 'PUT';
+    const DELETE                        = 'DELETE';
 
-    protected string $serviceUrl    = '';
+    protected string $serviceUrl        = '';
 
-    protected string $accessToken   = '';
+    protected string $accessToken       = '';
 
-    protected string $authHeader    = 'X-Auth-Token';
+    protected string $authHeader        = 'X-Auth-Token';
 
-    protected string $method        = 'GET';
+    protected string $method            = 'GET';
 
-    protected string $accept        = 'json';
+    protected string $accept            = 'json';
 
-    protected string $contentType   = 'json';
+    protected string $contentType       = 'json';
 
-    protected string $version       = '1.0';
+    protected string $version           = '1.0';
 
-    protected array $headers        = [];
+    protected array $headers            = [];
 
-    protected array $data           = [];
+    protected array $data               = [];
 
-    protected bool $verbose         = false;
+    protected bool $verbose             = false;
 
-    protected array $credentials    = [];
+    protected array $credentials        = [];
 
     /** @var resource */
-    protected $curlObj          = null;
+    protected $curlObj                  = null;
 
-    protected string $exceptionType = RestException::class;
+    protected string $exceptionType     = RestException::class;
 
-    protected string $responseType  = RestResponse::class;
+    protected string $responseType      = RestResponse::class;
 
-    protected string $curlUrl       = '';
+    protected string $curlUrl           = '';
+    
+    protected mixed $curlData           = null;
 
-    /** @var mixed Data to be sent to the service */
-    protected $curlData         = null;
+    protected ?RestResponse $response   = null;
 
-    protected ?RestResponse $response = null;
+    protected bool $ignoreErrors        = false;
 
-    protected bool $ignoreErrors    = false;
+    protected int $timeout      = 0;
 
     protected array $formats        = [
         'json'                          => [['application/json', 'application/x-json'], 'application/json'],
@@ -221,47 +222,40 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param string
-     * @return mixed
-     */
-    public function post(string $entity='')
+
+    public function timeout(int $timeout) : RestClientInterface
+    {
+        $this->timeout          = $timeout;
+
+        return $this;
+    }
+
+
+    public function post(string $entity='') : mixed
     {
         return $this->method('post')->sendRequest($entity);
     }
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function get(string $entity='')
+
+    public function get(string $entity='') : mixed
     {
         return $this->method('get')->sendRequest($entity);
     }
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function put(string $entity='')
+
+    public function put(string $entity='') : mixed
     {
         return $this->method('put')->sendRequest($entity);
     }
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function delete(string $entity='')
+
+    public function delete(string $entity='') : mixed
     {
         return $this->method('delete')->sendRequest($entity);
     }
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function sendRequest(string $entity='')
+
+    public function sendRequest(string $entity='') : mixed
     {
         $result                 = $this
             ->buildRequest($entity)
@@ -271,11 +265,8 @@ class RestClient implements RestClientInterface
         return $result;
     }
 
-    /**
-     * @param string $entity
-     * @return mixed
-     */
-    public function getRawRequest(string $entity='')
+
+    public function getRawRequest(string $entity='') : mixed
     {
         $this
             ->ignoreErrors()
@@ -329,8 +320,14 @@ class RestClient implements RestClientInterface
             ->setCurlOpt(CURLOPT_SSL_VERIFYPEER, false)
             ->setCurlOpt(CURLOPT_CUSTOMREQUEST, $this->method)
             ->setCurlOpt(CURLOPT_ENCODING, '')
-            ->setCurlOpt(CURLOPT_TIMEOUT, 60 * 30) //timeout in seconds
-            ->setCurlOpt(CURLOPT_CONNECTTIMEOUT, 60 * 30) //timeout in seconds
+            ;
+        if ( $this->timeout )
+        {
+            $this
+                ->setCurlOpt(CURLOPT_TIMEOUT, $this->timeout)
+                ->setCurlOpt(CURLOPT_CONNECTTIMEOUT, $this->timeout);
+        }
+        $this->setCurlBasicAuth()
             ->setCurlOpt(CURLOPT_NOSIGNAL, 1) //timeout in seconds
             ->setCurlBasicAuth()
             ->setCurlCookies()
@@ -339,12 +336,8 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param int $opt
-     * @param mixed $val
-     * @return RestClientInterface
-     */
-    public function setCurlOpt(int $opt, $val) : RestClientInterface
+
+    public function setCurlOpt(int $opt, mixed $val) : RestClientInterface
     {
         $this->curlObj          = is_null($this->curlObj) ? curl_init() : $this->curlObj;
         curl_setopt($this->curlObj, $opt, $val);
@@ -352,11 +345,8 @@ class RestClient implements RestClientInterface
         return $this;
     }
 
-    /**
-     * @param int $opt
-     * @return mixed
-     */
-    protected function getCurlInfo(int $opt)
+
+    protected function getCurlInfo(int $opt) : mixed
     {
         return curl_getinfo($this->curlObj, $opt);
     }
@@ -436,11 +426,8 @@ class RestClient implements RestClientInterface
         }
     }
 
-    /**
-     * @param bool $isMulti
-     * @return mixed
-     */
-    public function curlExec(bool $isMulti=false)
+
+    public function curlExec(bool $isMulti=false) : mixed
     {
         $response           = $isMulti ? curl_multi_getcontent($this->curlObj) : curl_exec($this->curlObj);
         $httpCode           = curl_getinfo($this->curlObj, CURLINFO_HTTP_CODE);

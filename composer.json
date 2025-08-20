@@ -16,8 +16,10 @@
         }
     ],
     "require": {
-        "php" : ">=7.4",
-        "terah/fluent-assert": "6.*"
+        "php" : ">=8.0",
+        "ext-simplexml": "*",
+        "ext-curl": "*",
+        "terah/fluent-assert": "8.*"
     },
     "require-dev": {
 
