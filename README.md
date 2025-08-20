@@ -35,7 +35,7 @@ If you discover any security related issues, please email uqcullen@uq.edu.au ins
 
 ## Credits
 
-- [Terry Cullen](https://bitbucket.org/terahdigital)
+- [Terry Cullen](https://github.com/terah)
 - [All Contributors](../../contributors)
 
 ## License

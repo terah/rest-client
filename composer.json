@@ -5,13 +5,13 @@
         "api",
         "php"
     ],
-    "homepage": "https://bitbucket.org/terahdigital/rest-client",
+    "homepage": "https://github.com/terah/rest-client",
     "license": "MIT",
     "authors": [
         {
             "name": "Terry Cullen",
             "email": "terry@terah.com.au",
-            "homepage": "http://terah.com.au",
+            "homepage": "https://terah.com.au",
             "role": "Developer"
         }
     ],
