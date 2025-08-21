@@ -50,6 +50,9 @@ interface RestClientInterface
     public function ignoreErrors(bool $ignore=true) : RestClientInterface;
 
 
+    public function waitForResponse(bool $waitForResponse=true) : RestClientInterface;
+
+
     public function exception(string $exception) : RestClientInterface;
 
 

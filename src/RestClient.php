@@ -52,6 +52,8 @@ class RestClient implements RestClientInterface
 
     protected bool $ignoreErrors        = false;
 
+    protected bool $waitForResponse     = true;
+
     protected int $timeout      = 0;
 
     protected array $formats        = [
@@ -143,6 +145,7 @@ class RestClient implements RestClientInterface
         $this->curlObj          = null;
         $this->response         = null;
         $this->ignoreErrors     = false;
+        $this->waitForResponse  = true;
         $this->format('json');
         $this->header('X-Api-Version', '1.0');
 
@@ -202,6 +205,14 @@ class RestClient implements RestClientInterface
     public function ignoreErrors(bool $ignore=true) : RestClientInterface
     {
         $this->ignoreErrors     = $ignore;
+
+        return $this;
+    }
+
+
+    public function waitForResponse(bool $waitForResponse=true) : RestClientInterface
+    {
+        $this->waitForResponse  = $waitForResponse;
 
         return $this;
     }
@@ -555,6 +566,10 @@ class RestClient implements RestClientInterface
         if ( $this->accessToken )
         {
             $this->header($this->authHeader, $this->accessToken);
+        }
+        if ( ! $this->waitForResponse )
+        {
+            $this->header('Connection', 'Close');
         }
         $headers = [];
         foreach ( $this->headers as $name => $value )
